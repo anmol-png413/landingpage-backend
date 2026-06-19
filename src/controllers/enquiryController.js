@@ -1,4 +1,5 @@
-const { saveEnquiry } = require('../services/supabaseService')
+const { saveEnquiry }    = require('../services/supabaseService')
+const { sendLeadEmails } = require('../services/emailService')
 
 // Map: landing page slug → { table, columns[] }
 // columns: list of fields this table accepts (avoids column-not-found errors)
@@ -48,6 +49,11 @@ async function submitEnquiry(req, res) {
     )
 
     await saveEnquiry(config.table, filteredData)
+
+    // Fire emails async — don't block response if email fails
+    sendLeadEmails(slug, { name, email, phone, comment, interested_in: req.body.interested_in, source }).catch(
+      (err) => console.error('Email send error:', err.message)
+    )
 
     return res.status(200).json({ success: true, message: 'Enquiry saved successfully' })
   } catch (err) {

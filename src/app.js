@@ -14,10 +14,10 @@ app.use(cors({
   },
 }))
 
-app.use(express.json())
+app.use(express.json())   
 
 // Health check
-app.get('/health', (req, res) => res.json({ status: 'ok' }))
+app.get('/health', (req, res) => res.json({ status: 'ok'  }))
 
 // Routes
 app.use('/api/enquiry', enquiryRoutes)
